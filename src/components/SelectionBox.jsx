@@ -8,11 +8,6 @@ function SelectionBox({ selectedText, onClearSelection }) {
     }
   };
 
-  const handleHighlight = () => {
-    // This requires more complex logic to track selection coordinates
-    console.log("Highlight feature not yet implemented in React version.");
-  };
-
   return (
     <div className="box">
       <h3>Selected Text</h3>
@@ -25,9 +20,7 @@ function SelectionBox({ selectedText, onClearSelection }) {
       ></textarea>
       <div className="selection-controls">
         <button id="btnCopy" onClick={handleCopy}>Copy</button>
-        <button id="btnHighlight" onClick={handleHighlight} disabled>Highlight</button>
         <button id="btnClearSelection" onClick={onClearSelection}>Clear</button>
-        <button id="btnClearHighlights" disabled>Clear Highlights</button>
       </div>
     </div>
   );
