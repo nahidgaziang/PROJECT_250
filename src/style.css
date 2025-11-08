@@ -1,0 +1,580 @@
+:root {
+  --bg-color: #f1f1f1;
+  --surface-color: #ffffff;
+  --primary-color: #007bff;
+  --primary-hover-color: #0056b3;
+  --text-color: #333333;
+  --text-muted-color: #6c757d;
+  --border-color: #d1d1d1;
+  --font-family: "Inter", sans-serif;
+  --toolbar-height: 56px;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 16px;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-container.tools-visible #toolsPane {
+  margin-right: 0;
+}
+
+/* --- Scrollbar Styling --- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #e0e0e0;
+}
+::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* --- Main Layout --- */
+#top-toolbar {
+  height: var(--toolbar-height);
+  background-color: var(--surface-color);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  justify-content: space-between; /* <-- THIS IS THE KEY */
+  gap: 0.5rem; /* <-- Reduced gap */
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+#top-toolbar h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-right: 0;
+}
+
+#main-content {
+  flex-grow: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.Smart {
+  font-size: 12px;
+  color: green;
+}
+
+#viewerPane {
+  flex-grow: 1;
+  overflow: auto;
+  padding: 2rem;
+}
+
+#pdf-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.page-container {
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: white;
+}
+
+.page-container canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.highlight {
+  position: absolute;
+  background-color: rgba(255, 255, 0, 0.5);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --- CRITICAL CHANGE ---
+   I have REMOVED the three rules for .textLayer that were here.
+   They are now handled by the imported 'pdf_viewer.css' file.
+*/
+
+/* --- Tools Sidebar --- */
+#toolsPane {
+  width: 380px;
+  flex-shrink: 0;
+  background-color: var(--surface-color);
+  border-left: 1px solid var(--border-color);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  transition: margin-right 0.3s ease-in-out;
+  margin-right: -380px; /* Hidden by default */
+}
+
+/* --- General UI Components --- */
+button,
+select,
+input {
+  font-family: var(--font-family);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+button {
+  background-color: transparent;
+  color: var(--text-color);
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+button:hover {
+  background-color: #e9ecef;
+  border-color: #ccc;
+}
+
+button.primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+button.primary:hover {
+  background-color: var(--primary-hover-color);
+  border-color: var(--primary-hover-color);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #eee;
+}
+
+button svg {
+  width: 20px;
+  height: 20px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+select,
+textarea,
+input[type="number"] {
+  width: 100%;
+  padding: 0.6rem;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+}
+
+select:focus,
+textarea:focus,
+input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* --- Tool Panels --- */
+#toolsPane .box {
+  background: #fdfdfd;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+#toolsPane h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 0.5rem;
+}
+
+.controls-inline {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.controls-inline select {
+  grid-column: 1 / -1;
+}
+.selection-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.5rem;
+}
+
+#selectionText,
+.result-pane {
+  background-color: #f0f0f0;
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  min-height: 50px;
+  color: var(--text-muted-color);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#selectionText {
+  color: var(--text-color);
+}
+
+.result-pane.has-content {
+  color: var(--text-color);
+}
+.loader {
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+  color: var(--text-muted-color);
+}
+
+/* --- Quiz Modal --- */
+#modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: none;
+}
+
+#quizModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 800px;
+  height: 90vh;
+  background: var(--bg-color);
+  border-radius: 8px;
+  z-index: 101;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+#quizModal .modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  background: var(--surface-color);
+}
+
+#quizModal .modal-header h2 {
+  font-size: 1.5rem;
+}
+
+#quizModal .modal-close {
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+#quizModal .modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+#quizModal .modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  text-align: right;
+  flex-shrink: 0;
+  background: var(--surface-color);
+}
+
+.quiz-question {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.quiz-question p {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.quiz-options label {
+  display: block;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quiz-options label:hover {
+  background-color: #f8f9fa;
+}
+
+.quiz-options input[type="radio"] {
+  margin-right: 0.75rem;
+}
+
+.quiz-question textarea {
+  width: 100%;
+  min-height: 100px;
+}
+
+#quizResultDisplay {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.quiz-options label.correct {
+  background-color: #d4edda;
+  border-color: var(--success-color);
+}
+.quiz-options label.incorrect {
+  background-color: #f8d7da;
+  border-color: var(--danger-color);
+}
+.textLayer {
+  font-family: initial;
+  font-size: initial;
+  line-height: initial;
+}
+
+/* --- Quiz Explanation Styling --- */
+.quiz-explanation {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  border-left: 4px solid var(--primary-color);
+}
+
+.quiz-explanation p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.quiz-explanation p:first-child {
+  margin-bottom: 0.5rem;
+}
+/* --- New Toolbar Layout Rules --- */
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.toolbar-center {
+  /* This group will stay in the center */
+  justify-content: center;
+}
+
+.toolbar-right {
+  /* This group will be pushed to the right */
+  justify-content: flex-end;
+  min-width: 200px; /* Give it space */
+}
+
+.user-email {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap; /* Prevent email from wrapping */
+  color: var(--text-color);
+}
+
+/* --- Annotation Toolbar Styles --- */
+.annotation-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+}
+
+.annotation-toolbar .toolbar-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.annotation-toolbar h4 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted-color);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.annotation-toolbar .tool-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.annotation-toolbar .tool-buttons button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.annotation-toolbar .tool-buttons button:hover {
+  background: #e9ecef;
+  border-color: var(--primary-color);
+}
+
+.annotation-toolbar .tool-buttons button.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.annotation-toolbar .tool-buttons button.active:hover {
+  background: var(--primary-hover-color);
+  border-color: var(--primary-hover-color);
+}
+
+.annotation-toolbar .color-palette {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.annotation-toolbar .color-swatch {
+  width: 32px;
+  height: 32px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.annotation-toolbar .color-swatch:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.annotation-toolbar .color-swatch.active {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.annotation-toolbar .width-slider {
+  width: 150px;
+  height: 6px;
+  border-radius: 3px;
+  background: #ddd;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.annotation-toolbar .width-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+}
+
+.annotation-toolbar .width-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+  border: none;
+}
+
+.annotation-toolbar .clear-all-btn {
+  padding: 0.5rem 1rem;
+  background: var(--danger-color);
+  color: white;
+  border: 1px solid var(--danger-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.annotation-toolbar .clear-all-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+/* --- Annotation Layer Styles --- */
+.annotation-layer {
+  user-select: none;
+}
+
+.annotation-layer svg {
+  pointer-events: none;
+}
+
+.annotation-layer svg rect,
+.annotation-layer svg path {
+  pointer-events: auto;
+}
