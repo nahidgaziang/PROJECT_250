@@ -578,3 +578,177 @@ textarea {
 .annotation-layer svg path {
   pointer-events: auto;
 }
+
+/* --- Splash Screen Styles --- */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(241, 241, 241, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+  backdrop-filter: blur(15px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.6s ease-in-out;
+  pointer-events: none;
+}
+
+.splash-content {
+  text-align: center;
+  animation: popUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+.splash-title {
+  font-size: 5rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -2px;
+  line-height: 1.2;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0;
+}
+
+.splash-read {
+  animation: slideInLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both,
+             glow 2s ease-in-out 1.2s infinite alternate;
+  display: inline-block;
+  transform-origin: center;
+}
+
+.splash-efy {
+  animation: slideInRight 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
+  display: inline-block;
+}
+
+.splash-subtitle {
+  font-size: 1.2rem;
+  color: #28a745;
+  font-style: italic;
+  font-weight: 500;
+  margin-top: 1rem;
+  margin-bottom: 0;
+  animation: fadeInUp 1s ease-out 0.8s both;
+  letter-spacing: 1px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popUp {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(100px);
+  }
+  50% {
+    transform: scale(1.15) translateY(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px) scale(0.8);
+  }
+  60% {
+    transform: translateX(10px) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100px) scale(0.8);
+  }
+  60% {
+    transform: translateX(-10px) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.3),
+                 0 0 20px rgba(255, 0, 0, 0.2),
+                 0 0 30px rgba(255, 0, 0, 0.1);
+  }
+  to {
+    text-shadow: 0 0 20px rgba(255, 0, 0, 0.5),
+                 0 0 30px rgba(255, 0, 0, 0.3),
+                 0 0 40px rgba(255, 0, 0, 0.2);
+  }
+}
+
+.splash-screen.fade-out {
+  animation: fadeOut 0.6s ease-in-out forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+    visibility: hidden;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .splash-title {
+    font-size: 3rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  
+  .splash-subtitle {
+    font-size: 1rem;
+    margin-top: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .splash-title {
+    font-size: 2.5rem;
+  }
+  
+  .splash-subtitle {
+    font-size: 0.9rem;
+  }
+}

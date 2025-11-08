@@ -6,6 +6,7 @@ import ViewerPane from './components/ViewerPane';
 import ToolsPane from './components/ToolsPane';
 import QuizModal from './components/QuizModal';
 import AnnotationToolbar from './components/AnnotationToolbar';
+import SplashScreen from './components/SplashScreen';
 
 // --- NEW IMPORTS ---
 import { useAuth } from './context/AuthContext';
@@ -32,6 +33,9 @@ function App() {
   const [toolColor, setToolColor] = useState('#ffff00');
   const [toolWidth, setToolWidth] = useState(2);
   const pdfIdRef = useRef(null);
+
+  // --- Splash Screen State ---
+  const [showSplash, setShowSplash] = useState(true);
 
   // --- Effects (no changes) ---
   useEffect(() => {
@@ -354,8 +358,15 @@ function App() {
     await handleLoadSample();
   };
 
+  // Splash screen handler
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
+
   return (
     <div className={`app-container ${isToolsVisible ? 'tools-visible' : ''}`}>
+      {/* Splash Screen */}
+      {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
       
       {/* --- THIS IS THE CHANGE --- */}
       {/* We pass the user info and logout function TO the toolbar */}
