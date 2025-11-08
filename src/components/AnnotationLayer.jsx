@@ -92,7 +92,7 @@ function AnnotationLayer({
       return;
     }
 
-    if (tool === 'pen' || tool === 'marker' || tool === 'highlighter') {
+    if (tool === 'pen' || tool === 'highlighter') {
       isDrawingRef.current = true;
       const point = getPointFromEvent(e);
       if (point) {
@@ -122,7 +122,7 @@ function AnnotationLayer({
       ctx.moveTo(lastPoint.x, lastPoint.y);
       ctx.lineTo(point.x, point.y);
       ctx.strokeStyle = color;
-      ctx.lineWidth = width || (tool === 'marker' ? 8 : tool === 'highlighter' ? 12 : 2);
+      ctx.lineWidth = width || (tool === 'highlighter' ? 12 : 2);
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       if (tool === 'highlighter') {
@@ -172,7 +172,7 @@ function AnnotationLayer({
           type: 'drawing',
           tool: tool,
           color: color,
-          width: width || (tool === 'marker' ? 8 : 2),
+          width: width || 2,
           path: [...currentPathRef.current]
         });
       }
@@ -233,7 +233,7 @@ function AnnotationLayer({
 
   if (!viewport) return null;
 
-  const isDrawingTool = tool === 'pen' || tool === 'marker' || tool === 'highlighter';
+  const isDrawingTool = tool === 'pen' || tool === 'highlighter';
   const cursorStyle = tool === 'eraser' ? 'grab' : 
                      isDrawingTool ? 'crosshair' : 
                      'default';

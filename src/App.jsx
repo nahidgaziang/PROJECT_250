@@ -139,7 +139,7 @@ function App() {
 
   // Disable text selection when using drawing tools
   useEffect(() => {
-    if (activeTool === 'pen' || activeTool === 'marker' || activeTool === 'eraser') {
+    if (activeTool === 'pen' || activeTool === 'eraser') {
       document.body.style.userSelect = 'none';
     } else {
       document.body.style.userSelect = '';
@@ -261,18 +261,6 @@ function App() {
     }
   };
 
-  const handleLoadSample = async () => {
-    const sampleUrl = "https://raw.githubusercontent.com/mozilla/pdf.js-sample-files/master/helloworld.pdf";
-    try {
-      const response = await fetch(sampleUrl);
-      const data = await response.arrayBuffer();
-      setPdfData(data);
-      savePdfToSession(data);
-    } catch (error) {
-      console.error("Error loading sample PDF:", error);
-    }
-  };
-
   const handleStartQuiz = (data) => {
     setQuizData(data);
     setIsQuizModalOpen(true);
@@ -347,17 +335,6 @@ function App() {
     handleFileChange(event);
   };
 
-  const handleLoadSampleWithReset = async () => {
-    // Clear annotations when loading new PDF
-    if (pdfIdRef.current) {
-      localStorage.removeItem(`pdf-annotations-${pdfIdRef.current}`);
-    }
-    setAnnotations({});
-    setActiveTool('none');
-    pdfIdRef.current = null;
-    await handleLoadSample();
-  };
-
   // Splash screen handler
   const handleSplashComplete = () => {
     setShowSplash(false);
@@ -372,7 +349,6 @@ function App() {
       {/* We pass the user info and logout function TO the toolbar */}
       <TopToolbar
         onFileChange={handleFileChangeWithReset}
-        onLoadSample={handleLoadSampleWithReset}
         onToggleTools={handleToggleTools}
         currentUser={currentUser}
         onLogout={handleLogout}

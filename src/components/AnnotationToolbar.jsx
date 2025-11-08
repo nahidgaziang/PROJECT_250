@@ -30,7 +30,7 @@ function AnnotationToolbar({
   const getColorPalette = () => {
     if (activeTool === 'highlighter') {
       return highlightColors;
-    } else if (activeTool === 'pen' || activeTool === 'marker') {
+    } else if (activeTool === 'pen') {
       return penColors;
     }
     return [];
@@ -72,16 +72,6 @@ function AnnotationToolbar({
             Pen
           </button>
           <button
-            className={activeTool === 'marker' ? 'active' : ''}
-            onClick={() => onToolChange('marker')}
-            title="Marker"
-          >
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-            </svg>
-            Marker
-          </button>
-          <button
             className={activeTool === 'eraser' ? 'active' : ''}
             onClick={() => onToolChange('eraser')}
             title="Eraser"
@@ -94,7 +84,7 @@ function AnnotationToolbar({
         </div>
       </div>
 
-      {(activeTool === 'pen' || activeTool === 'marker' || activeTool === 'highlighter') && (
+      {(activeTool === 'pen' || activeTool === 'highlighter') && (
         <>
           <div className="toolbar-section">
             <h4>Color</h4>
@@ -111,7 +101,7 @@ function AnnotationToolbar({
             </div>
           </div>
 
-          {(activeTool === 'pen' || activeTool === 'marker') && (
+          {(activeTool === 'pen') && (
             <div className="toolbar-section">
               <h4>Width: {width}px</h4>
               <input
