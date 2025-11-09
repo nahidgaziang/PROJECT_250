@@ -5,7 +5,7 @@ function SplashScreen({ onComplete }) {
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
-    // Show animation for 2.5 seconds, then fade out
+    // Show animation for 2 seconds, then fade out
     const fadeTimer = setTimeout(() => {
       setIsFading(true);
     }, 2000);

@@ -2,10 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import AnnotationLayer from './AnnotationLayer';
 
-//
-// This CSS file is required to fix the misaligned text
-// selection you showed in image_d78b25.jpg.
-//
+
 import 'pdfjs-dist/web/pdf_viewer.css';
 
 
@@ -22,10 +19,7 @@ function PdfPage({
   const canvasRef = useRef(null);
   const textLayerRef = useRef(null);
 
-  //
-  // --- THIS IS THE FIX ---
-  // I have corrected my typo from '==' to '='
-  //
+  
   const [pageData, setPageData] = useState(null);
   
   const [viewport, setViewport] = useState(null);

@@ -13,8 +13,6 @@ export function AuthProvider({ children }) {
   // Try to get the user from localStorage on initial load
   const [currentUser, setCurrentUser] = useState(localStorage.getItem('currentUserEmail'));
 
-  // --- Fake Sign Up ---
-  // DANGER: We are storing the password in localStorage.
   // This is very insecure.
   const signup = (email, password) => {
     // We'll store users in an object in localStorage

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { callGemini } from '../api/gemini';
 
-// --- Imports are now cleaned up (no duplicates) ---
+
 import { useAuth } from '../context/AuthContext';
 import { addUserHistory } from '../utils/history';
 

@@ -26,7 +26,7 @@ function QuizBox({ selectedText, onStartQuiz }) {
     "${selectedText}"`;
 
     //
-    // --- CHANGE 2: Updated Schema ---
+    // --- CHANGE 2: 
     // We added an 'explanation' field and made it required.
     //
     const quizSchema = {

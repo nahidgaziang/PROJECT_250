@@ -7,8 +7,6 @@ import ToolsPane from './components/ToolsPane';
 import QuizModal from './components/QuizModal';
 import AnnotationToolbar from './components/AnnotationToolbar';
 import SplashScreen from './components/SplashScreen';
-
-// --- NEW IMPORTS ---
 import { useAuth } from './context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -345,7 +343,6 @@ function App() {
       {/* Splash Screen */}
       {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
       
-      {/* --- THIS IS THE CHANGE --- */}
       {/* We pass the user info and logout function TO the toolbar */}
       <TopToolbar
         onFileChange={handleFileChangeWithReset}

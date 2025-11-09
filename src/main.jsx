@@ -4,9 +4,9 @@ import App from './App.jsx'
 import './style.css' 
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Import our new components
+// Import our components
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext.jsx'; // Our new AuthProvider
+import { AuthProvider } from './context/AuthContext.jsx'; // Our AuthProvider
 import LoginPage from './components/LoginPage.jsx'; // We will create this
 import SignUpPage from './components/SignUpPage.jsx'; // We will create this
 

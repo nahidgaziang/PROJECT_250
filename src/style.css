@@ -118,10 +118,6 @@ body {
   pointer-events: none;
 }
 
-/* --- CRITICAL CHANGE ---
-   I have REMOVED the three rules for .textLayer that were here.
-   They are now handled by the imported 'pdf_viewer.css' file.
-*/
 
 /* --- Tools Sidebar --- */
 #toolsPane {

@@ -63,7 +63,7 @@ function TopToolbar({ onFileChange, onToggleTools, currentUser, onLogout }) {
             <button onClick={onLogout}>Log Out</button>
           </>
         ) : (
-          /* Empty div to balance the flexbox */
+          
           <div></div>
         )}
       </div>
