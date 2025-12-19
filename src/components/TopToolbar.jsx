@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 
 // Accept new props: currentUser and onLogout
 function TopToolbar({ onFileChange, onToggleTools, currentUser, onLogout }) {
@@ -6,6 +8,30 @@ function TopToolbar({ onFileChange, onToggleTools, currentUser, onLogout }) {
 
   const handleFileClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleToolsClick = () => {
+    if (!currentUser) {
+
+      // User is not logged in, show toast
+      toast.info("Please log in or sign up to use AI tools.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+
+    }
+    else {
+      onToggleTools();
+    }
+  };
+
+  const handleLogoutClick = () => {
+    toast.success("Successfully logged out!", {
+      position: "top-center",
+      autoClose: 2000,
+    });
+    // Call the original logout function
+    onLogout();
   };
 
   return (
@@ -42,7 +68,7 @@ function TopToolbar({ onFileChange, onToggleTools, currentUser, onLogout }) {
           style={{ display: 'none' }}
           onChange={onFileChange}
         />
-        <button id="toolsToggleBtn" title="Toggle Tools Sidebar" onClick={onToggleTools}>
+        <button id="toolsToggleBtn" title="Toggle Tools Sidebar" onClick={handleToolsClick}>
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -51,8 +77,9 @@ function TopToolbar({ onFileChange, onToggleTools, currentUser, onLogout }) {
               d="M4 6h16M4 12h16M4 18h7"
             ></path>
           </svg>
-          Tools
+          Tools <sup style={{ paddingBottom: '20px', color: 'red' }}>AI Powered</sup>
         </button>
+        <ToastContainer />
       </div>
 
       {/* --- Group 3: Auth (Right) --- */}
@@ -60,14 +87,13 @@ function TopToolbar({ onFileChange, onToggleTools, currentUser, onLogout }) {
         {currentUser ? (
           <>
             <span className="user-email">{currentUser}</span>
-            <button onClick={onLogout}>Log Out</button>
+            <button onClick={handleLogoutClick}>Log Out</button>
           </>
         ) : (
-          
-          <div></div>
+          <button><Link to="/login" style={{ textDecoration: 'none', color: 'black' }}  >Login/Sign Up</Link></button>
         )}
       </div>
-    </div>
+    </div >
   );
 }
 

@@ -11,3 +11,10 @@ quiz generation) on top of a PDF viewer. Progress 1 implements the core viewer, 
 capture, UI for tools, and calls to the Gemini API for translation/summarization/quiz generation. 
 Progress 2 focuses on adding account-based access control, per-user history logging, auto
 selection behavior, desktop packaging, and a collaborative per-PDF chat 
+
+
+<br>
+Running Process: <br>
+
+Steps to run npm install → npm run dev
+<br>

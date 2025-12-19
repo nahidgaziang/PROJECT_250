@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext'; // Our custom hook
 function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [registration_no, setRegistration_no] = useState(''); 
   const [error, setError] = useState('');
   const { signup } = useAuth();
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ function SignUpPage() {
     e.preventDefault();
     setError('');
     try {
-      await signup(email, password);
+      await signup(email, password, name, registration_no );
       navigate('/'); // Redirect to the main app
     } catch (err) {
       setError(err.message);
@@ -24,6 +26,9 @@ function SignUpPage() {
     <div style={{ padding: '2rem', maxWidth: '400px', margin: '5rem auto', backgroundColor: 'white', borderRadius: '8px' }}>
       <h2>Sign Up for Readefy</h2>
       <form onSubmit={handleSignUp}>
+        <input type="text" value={name} onChange={(e) =>  setName(e.target.value)} placeholder="Nahid Marfi" required style={{ width: '100%', padding: '0.5rem', margin: '0.5rem 0' }} />
+        <input type="password" value={registration_no} onChange={(e) => setRegistration_no(e.target.value)} placeholder="Registration No" required style={{ width: '100%', padding: '0.5rem', margin: '0.5rem 0' }} />
+
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required style={{ width: '100%', padding: '0.5rem', margin: '0.5rem 0' }} />
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required style={{ width: '100%', padding: '0.5rem', margin: '0.5rem 0' }} />
         <button type="submit" className="primary" style={{ width: '100%' }}>Sign Up</button>

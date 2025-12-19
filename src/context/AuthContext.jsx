@@ -1,4 +1,7 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+// Backend API URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 // Create the context
 const AuthContext = createContext();
@@ -10,48 +13,117 @@ export function useAuth() {
 
 // Create the provider component
 export function AuthProvider({ children }) {
-  // Try to get the user from localStorage on initial load
-  const [currentUser, setCurrentUser] = useState(localStorage.getItem('currentUserEmail'));
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // This is very insecure.
-  const signup = (email, password) => {
-    // We'll store users in an object in localStorage
-    const users = JSON.parse(localStorage.getItem('usersDB')) || {};
-    
-    if (users[email]) {
-      throw new Error("This email is already taken.");
+  // Verify token on app load
+  useEffect(() => {
+    const verifyToken = async () => {
+      const token = localStorage.getItem('authToken');
+
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/auth/verify`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Use name instead of email
+          setCurrentUser(data.user.name);
+          console.log('Verified user:', data.user.name);
+        } else {
+          // Invalid token, clear it
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('currentUserName');
+        }
+      } catch (error) {
+        console.error('Token verification failed:', error);
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUserName');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyToken();
+  }, []);
+
+  // Sign up with backend API
+  const signup = async (email, password, name, registration_no) => {
+    try {
+      console.log('🔵 Attempting signup with API URL:', API_URL);
+      const response = await fetch(`${API_URL}/auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password, name, registration_no })
+      });
+
+      console.log('🔵 Signup response status:', response.status);
+      const data = await response.json();
+      console.log('🔵 Signup response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Signup failed');
+      }
+
+      // Store token and user name
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('currentUserName', data.user.name);
+      setCurrentUser(data.user.name);
+
+      return data.user.name;
+    } catch (error) {
+      console.error('❌ Signup error:', error);
+      throw error;
     }
-    
-    // Store the new user
-    users[email] = { password }; // Storing password in plain text!
-    localStorage.setItem('usersDB', JSON.stringify(users));
-    
-    // Log them in
-    localStorage.setItem('currentUserEmail', email);
-    setCurrentUser(email);
-    return email;
   };
 
-  // --- Fake Log In ---
-  const login = (email, password) => {
-    const users = JSON.parse(localStorage.getItem('usersDB')) || {};
+  // Log in with backend API
+  const login = async (email, password) => {
+    try {
+      console.log('🔵 Attempting login with API URL:', API_URL);
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
 
-    if (!users[email]) {
-      throw new Error("No account found with this email.");
-    }
-    if (users[email].password !== password) {
-      throw new Error("Incorrect password.");
-    }
+      console.log('🔵 Login response status:', response.status);
+      const data = await response.json();
+      console.log('🔵 Login response data:', data);
 
-    // Log them in
-    localStorage.setItem('currentUserEmail', email);
-    setCurrentUser(email);
-    return email;
+      if (!response.ok) {
+        console.error('❌ Login response error:', data.error);
+        throw new Error(data.error || 'Login failed');
+      }
+
+      // Store token and user name
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('currentUserName', data.user.name);
+      setCurrentUser(data.user.name);
+
+      return data.user.name;
+    } catch (error) {
+      console.error('❌ Login error:', error);
+      throw error;
+    }
   };
 
-  // --- Fake Log Out ---
+  // Log out
   const logout = () => {
-    localStorage.removeItem('currentUserEmail');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUserName');
     setCurrentUser(null);
   };
 
@@ -59,7 +131,8 @@ export function AuthProvider({ children }) {
     currentUser,
     signup,
     login,
-    logout
+    logout,
+    loading
   };
 
   return (

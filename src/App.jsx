@@ -9,6 +9,7 @@ import AnnotationToolbar from './components/AnnotationToolbar';
 import SplashScreen from './components/SplashScreen';
 import { useAuth } from './context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 function App() {
   // --- AUTH HOOKS ---
@@ -55,11 +56,11 @@ function App() {
       try {
         const doc = await pdfjsLib.getDocument({ data: pdfData }).promise;
         setPdfDoc(doc);
-        
+
         // Generate a unique ID for this PDF based on its content
         const hash = await generatePdfHash(pdfData);
         pdfIdRef.current = hash;
-        
+
         // Load saved annotations for this PDF
         const savedAnnotations = localStorage.getItem(`pdf-annotations-${hash}`);
         if (savedAnnotations) {
@@ -115,7 +116,7 @@ function App() {
     setAnnotations(prev => {
       const pageAnnotations = prev[pageNumber] || { highlights: [], drawings: [] };
       const newAnnotations = { ...prev };
-      
+
       if (annotation.type === 'highlight') {
         newAnnotations[pageNumber] = {
           ...pageAnnotations,
@@ -130,7 +131,7 @@ function App() {
           drawings: [...(pageAnnotations.drawings || []), annotation]
         };
       }
-      
+
       return newAnnotations;
     });
   }, []);
@@ -142,7 +143,7 @@ function App() {
     } else {
       document.body.style.userSelect = '';
     }
-    
+
     return () => {
       document.body.style.userSelect = '';
     };
@@ -153,15 +154,15 @@ function App() {
     if (activeTool !== 'highlighter') {
       return;
     }
-    
+
     const handleTextSelection = () => {
       const selection = window.getSelection();
       if (selection.rangeCount === 0) return;
-      
+
       const range = selection.getRangeAt(0);
       const rects = Array.from(range.getClientRects());
       if (rects.length === 0) return;
-      
+
       // Find the page container
       let pageContainer = range.commonAncestorContainer;
       if (pageContainer.nodeType !== Node.ELEMENT_NODE) {
@@ -170,14 +171,14 @@ function App() {
       while (pageContainer && !pageContainer.classList.contains('page-container')) {
         pageContainer = pageContainer.parentElement;
       }
-      
+
       if (!pageContainer) return;
-      
+
       // Get page number from data attribute
       const pageNumber = parseInt(pageContainer.getAttribute('data-page-number'));
-      
+
       if (!pageNumber || !pdfDoc) return;
-      
+
       const pageRect = pageContainer.getBoundingClientRect();
       const highlightRects = rects
         .filter(rect => rect.width > 0 && rect.height > 0)
@@ -187,9 +188,9 @@ function App() {
           width: rect.width,
           height: rect.height
         }));
-      
+
       if (highlightRects.length === 0) return;
-      
+
       const annotation = {
         id: `highlight-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         type: 'highlight',
@@ -199,16 +200,16 @@ function App() {
         text: selection.toString(),
         timestamp: Date.now()
       };
-      
+
       handleAnnotationAdd(pageNumber, annotation);
       selection.removeAllRanges();
     };
-    
+
     // Small delay to ensure selection is complete
     const timeoutId = setTimeout(() => {
       document.addEventListener('mouseup', handleTextSelection);
     }, 100);
-    
+
     return () => {
       clearTimeout(timeoutId);
       document.removeEventListener('mouseup', handleTextSelection);
@@ -276,16 +277,18 @@ function App() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
     setPdfData(null);
     setPdfDoc(null);
     setIsToolsVisible(false);
   };
 
   const handleToggleTools = () => {
+
+
     if (!currentUser) {
-      alert("Please log in or sign up to use the tools.");
       navigate('/login');
+
     } else {
       setIsToolsVisible(!isToolsVisible);
     }
@@ -296,7 +299,7 @@ function App() {
     setAnnotations(prev => {
       const pageAnnotations = prev[pageNumber] || { highlights: [], drawings: [] };
       const newAnnotations = { ...prev };
-      
+
       if (annotationType === 'highlight') {
         newAnnotations[pageNumber] = {
           ...pageAnnotations,
@@ -308,7 +311,7 @@ function App() {
           drawings: (pageAnnotations.drawings || []).filter(d => d.id !== annotationId)
         };
       }
-      
+
       return newAnnotations;
     });
   };
@@ -342,7 +345,7 @@ function App() {
     <div className={`app-container ${isToolsVisible ? 'tools-visible' : ''}`}>
       {/* Splash Screen */}
       {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
-      
+
       {/* We pass the user info and logout function TO the toolbar */}
       <TopToolbar
         onFileChange={handleFileChangeWithReset}
@@ -356,8 +359,8 @@ function App() {
       <main id="main-content">
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           {pdfDoc && (
-            <div style={{ 
-              background: '#f8f9fa', 
+            <div style={{
+              background: '#f8f9fa',
               borderBottom: '1px solid #dee2e6',
               padding: '0.5rem 1rem',
               display: 'flex',
@@ -375,7 +378,7 @@ function App() {
               />
             </div>
           )}
-          <ViewerPane 
+          <ViewerPane
             pdfDoc={pdfDoc}
             activeTool={activeTool}
             toolColor={toolColor}
